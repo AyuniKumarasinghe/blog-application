@@ -4,6 +4,11 @@ session_start();
 
 require_once "../config/database.php";
 
+$pageTitle = "Login - My Blog";
+
+require_once "../includes/header.php";
+
+
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -50,14 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login - My Blog</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
 </head>
 
 <body>
@@ -66,52 +63,50 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <?php if (!empty($message)): ?>
 
-        <p>
-            <?php echo htmlspecialchars($message); ?>
-        </p>
-
+       <p class="message">
+    <?php echo htmlspecialchars($message); ?>
+</p>
     <?php endif; ?>
 
+<form method="POST" action="">
 
-    <form method="POST" action="">
+    <div>
 
-        <div>
+        <label for="email">
+            Email
+        </label>
 
-            <label for="email">
-                Email
-            </label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+        >
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                required
-            >
-
-        </div>
-
-
-        <div>
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            >
-
-        </div>
+    </div>
 
 
-        <button type="submit">
-            Login
-        </button>
+    <div>
 
-    </form>
+        <label for="password">
+            Password
+        </label>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            required
+        >
+
+    </div>
+
+
+    <button type="submit">
+        Login
+    </button>
+
+</form>
 
 
     <p>
@@ -125,3 +120,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 
 </html>
+
+<?php require_once "../includes/footer.php"; ?>

@@ -1,6 +1,9 @@
 <?php
 
 require_once "../config/database.php";
+$pageTitle = "Register - My Blog";
+
+require_once "../includes/header.php";
 
 $message = "";
 $messageType = "";
@@ -79,14 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Register - My Blog</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
+   
 </head>
 
 <body>
@@ -105,72 +101,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method="POST" action="">
 
         <div>
+    <label for="username">Username</label>
 
-            <label for="username">
-                Username
-            </label>
+    <input
+        type="text"
+        id="username"
+        name="username"
+        required
+    >
+</div>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-            >
+<div>
+    <label for="email">Email</label>
 
-        </div>
+    <input
+        type="email"
+        id="email"
+        name="email"
+        required
+    >
+</div>
 
+<div>
+    <label for="password">Password</label>
 
-        <div>
+    <input
+        type="password"
+        id="password"
+        name="password"
+        required
+    >
+</div>
 
-            <label for="email">
-                Email
-            </label>
+<div>
+    <label for="confirm_password">
+        Confirm Password
+    </label>
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                required
-            >
+    <input
+        type="password"
+        id="confirm_password"
+        name="confirm_password"
+        required
+    >
+</div>
 
-        </div>
-
-
-        <div>
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            >
-
-        </div>
-
-
-        <div>
-
-            <label for="confirm_password">
-                Confirm Password
-            </label>
-
-            <input
-                type="password"
-                id="confirm_password"
-                name="confirm_password"
-                required
-            >
-
-        </div>
-
-
-        <button type="submit">
-            Register
-        </button>
+<button type="submit">
+    Register
+</button>
 
     </form>
 
@@ -186,3 +164,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 
 </html>
+<?php require_once "../includes/footer.php"; ?>
