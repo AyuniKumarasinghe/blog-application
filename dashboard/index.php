@@ -26,6 +26,10 @@ $stmt->execute([
 
 $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$pageTitle = "Dashboard - My Blog";
+
+require_once "../includes/header.php";
+
 ?>
 
 <!DOCTYPE html>
@@ -33,41 +37,14 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard - My Blog</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
+    
 </head>
 
 <body>
 
     <header>
 
-        <h1>My Blog</h1>
-
-        <nav>
-
-            <a href="../index.php">
-                Home
-            </a>
-
-            |
-
-            <a href="../blog/create.php">
-                Create Blog
-            </a>
-
-            |
-
-            <a href="../auth/logout.php">
-                Logout
-            </a>
-
-        </nav>
+     
 
     </header>
 
@@ -114,7 +91,7 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php foreach ($blogs as $blog): ?>
 
-                <article>
+               <article class="blog-card">
 
                     <h3>
                         <?php echo htmlspecialchars($blog["title"]); ?>
@@ -180,12 +157,12 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         |
 
-                        <a
-                            href="../blog/delete.php?id=<?php echo $blog["id"]; ?>"
-                            onclick="return confirm('Are you sure you want to delete this blog?');"
-                        >
-                            Delete
-                        </a>
+                      <a
+    href="../blog/delete.php?id=<?php echo $blog["id"]; ?>"
+    class="delete-link"
+>
+    Delete
+</a>
 
                     </p>
 
@@ -198,8 +175,11 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <?php endif; ?>
 
+
+
     </main>
 
 </body>
 
 </html>
+<?php require_once "../includes/footer.php"; ?>

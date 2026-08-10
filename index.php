@@ -16,48 +16,25 @@ $stmt = $pdo->query($sql);
 
 $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$pageTitle = "Home - My Blog";
+
+require_once "includes/header.php";
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>My Blog</title>
-
-    <link rel="stylesheet" href="assets/css/style.css">
-
+   
 </head>
 
 <body>
 
     <header>
 
-        <h1>My Blog</h1>
-
-        <nav>
-
-            <a href="index.php">
-                Home
-            </a>
-
-            |
-
-            <a href="auth/register.php">
-                Register
-            </a>
-
-            |
-
-            <a href="auth/login.php">
-                Login
-            </a>
-
-        </nav>
+       
 
     </header>
 
@@ -77,7 +54,7 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php foreach ($blogs as $blog): ?>
 
-                <article>
+               <article class="blog-card">
 
                     <h3>
                         <?php echo htmlspecialchars($blog["title"]); ?>
@@ -113,10 +90,12 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </p>
 
 
-                    <a href="blog/view.php?id=<?php echo $blog["id"]; ?>">
-                        Read More
-                    </a>
-
+    <a
+    href="blog/view.php?id=<?php echo $blog["id"]; ?>"
+    class="button"
+>
+    Read More
+</a>
                 </article>
 
                 <hr>
@@ -127,6 +106,4 @@ $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </main>
 
-</body>
-
-</html>
+<?php require_once "includes/footer.php"; ?>
