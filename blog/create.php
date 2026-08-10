@@ -4,6 +4,11 @@ session_start();
 
 require_once "../config/database.php";
 
+
+$pageTitle = "Create Blog - My Blog";
+
+require_once "../includes/header.php";
+
 // Make sure the user is logged in
 if (!isset($_SESSION["user_id"])) {
 
@@ -48,23 +53,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Create Blog - My Blog</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
 </head>
 
 <body>
+<section class="page-section">
 
     <h1>Create New Blog</h1>
 
     <?php if (!empty($message)): ?>
 
-        <p>
+        <p class="message">
             <?php echo htmlspecialchars($message); ?>
         </p>
 
@@ -79,8 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Blog Title
             </label>
 
-            <br>
-
             <input
                 type="text"
                 id="title"
@@ -91,8 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         </div>
 
-        <br>
-
 
         <div>
 
@@ -100,19 +94,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Blog Content
             </label>
 
-            <br>
-
             <textarea
                 id="content"
                 name="content"
-                rows="10"
+                rows="12"
                 placeholder="Write your blog here..."
                 required
             ></textarea>
 
         </div>
-
-        <br>
 
 
         <button type="submit">
@@ -121,6 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     </form>
 
+</section>
 
     <p>
         <a href="../dashboard/index.php">
@@ -131,3 +122,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 
 </html>
+<?php require_once "../includes/footer.php"; ?>

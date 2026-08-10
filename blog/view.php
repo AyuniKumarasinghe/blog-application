@@ -27,6 +27,10 @@ $stmt->execute([$blogId]);
 
 $blog = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$pageTitle = $blog["title"] . " - My Blog";
+
+require_once "../includes/header.php";
+
 if (!$blog) {
 
     header("Location: ../index.php");
@@ -40,123 +44,96 @@ if (!$blog) {
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>
-        <?php echo htmlspecialchars($blog["title"]); ?>
-        - My Blog
-    </title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
 </head>
 
 <body>
 
     <header>
 
-        <h1>My Blog</h1>
-
-        <nav>
-
-            <a href="../index.php">
-                Home
-            </a>
-
-            |
-
-            <a href="../auth/register.php">
-                Register
-            </a>
-
-            |
-
-            <a href="../auth/login.php">
-                Login
-            </a>
-
-        </nav>
+     
 
     </header>
 
 
     <main>
 
-        <article>
+       <article class="single-blog">
 
-            <h1>
-                <?php echo htmlspecialchars($blog["title"]); ?>
-            </h1>
-
-
-            <p>
-
-                By
-                <strong>
-                    <?php echo htmlspecialchars($blog["username"]); ?>
-                </strong>
-
-            </p>
+    <h1>
+        <?php echo htmlspecialchars($blog["title"]); ?>
+    </h1>
 
 
-            <p>
+    <div class="blog-meta">
 
-                Published:
-                <?php
-                echo date(
-                    "F d, Y",
-                    strtotime($blog["created_at"])
-                );
-                ?>
+        <span>
+            By
+            <strong>
+                <?php echo htmlspecialchars($blog["username"]); ?>
+            </strong>
+        </span>
 
-            </p>
+        <span>
+            Published:
+            <?php
+            echo date(
+                "F d, Y",
+                strtotime($blog["created_at"])
+            );
+            ?>
+        </span>
 
-
-            <?php if ($blog["updated_at"] !== $blog["created_at"]): ?>
-
-                <p>
-
-                    Updated:
-                    <?php
-                    echo date(
-                        "F d, Y",
-                        strtotime($blog["updated_at"])
-                    );
-                    ?>
-
-                </p>
-
-            <?php endif; ?>
+    </div>
 
 
-            <hr>
+    <?php if ($blog["updated_at"] !== $blog["created_at"]): ?>
 
+        <p class="blog-meta">
 
-            <div>
-
-                <?php
-                echo nl2br(
-                    htmlspecialchars($blog["content"])
-                );
-                ?>
-
-            </div>
-
-        </article>
-
-
-        <p>
-
-            <a href="../index.php">
-                ← Back to Home
-            </a>
+            Updated:
+            <?php
+            echo date(
+                "F d, Y",
+                strtotime($blog["updated_at"])
+            );
+            ?>
 
         </p>
+
+    <?php endif; ?>
+
+
+    <hr>
+
+
+    <div class="single-blog-content">
+
+        <?php
+        echo nl2br(
+            htmlspecialchars($blog["content"])
+        );
+        ?>
+
+    </div>
+
+
+    <p style="margin-top: 30px;">
+
+        <a
+            href="../index.php"
+            class="button"
+        >
+            ← Back to Home
+        </a>
+
+    </p>
+
+</article>
+
 
     </main>
 
 </body>
 
 </html>
+<?php require_once "../includes/footer.php"; ?>

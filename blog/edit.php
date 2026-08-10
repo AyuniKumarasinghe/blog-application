@@ -3,6 +3,9 @@
 session_start();
 
 require_once "../config/database.php";
+$pageTitle = "Edit Blog - My Blog";
+
+require_once "../includes/header.php";
 
 // User must be logged in
 if (!isset($_SESSION["user_id"])) {
@@ -89,24 +92,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Edit Blog - My Blog</title>
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
 </head>
 
 <body>
+
+   <section class="page-section">
 
     <h1>Edit Blog</h1>
 
 
     <?php if (!empty($message)): ?>
 
-        <p>
+        <p class="message">
             <?php echo htmlspecialchars($message); ?>
         </p>
 
@@ -121,8 +118,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Blog Title
             </label>
 
-            <br>
-
             <input
                 type="text"
                 id="title"
@@ -133,16 +128,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         </div>
 
-        <br>
-
 
         <div>
 
             <label for="content">
                 Blog Content
             </label>
-
-            <br>
 
             <textarea
                 id="content"
@@ -153,8 +144,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         </div>
 
-        <br>
-
 
         <button type="submit">
             Update Blog
@@ -163,14 +152,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
 
 
-    <p>
+    <p style="margin-top: 20px;">
 
-        <a href="view.php?id=<?php echo $blogId; ?>">
+        <a
+            href="view.php?id=<?php echo $blogId; ?>"
+            class="button"
+        >
             Cancel
         </a>
 
     </p>
 
+</section>
+
+
+   
+
 </body>
 
 </html>
+<?php require_once "../includes/footer.php"; ?>
