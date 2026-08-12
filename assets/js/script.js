@@ -19,3 +19,38 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+
+/* =================================
+   CHESSUPDATE BLOG EDITOR
+   ================================= */
+
+function formatText(command) {
+
+    document.execCommand(command, false, null);
+
+    document.getElementById("blogEditor").focus();
+}
+
+
+const blogForm = document.querySelector("form");
+
+if (blogForm) {
+
+    blogForm.addEventListener("submit", function () {
+
+        const editor =
+            document.getElementById("blogEditor");
+
+        const content =
+            document.getElementById("blogContent");
+
+        if (editor && content) {
+
+            content.value = editor.innerHTML;
+
+        }
+
+    });
+
+}

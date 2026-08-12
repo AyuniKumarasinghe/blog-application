@@ -56,18 +56,38 @@ require_once "../includes/header.php";
             <?php echo htmlspecialchars($_SESSION["username"]); ?>!
         </h2>
 
+<div class="dashboard-header">
 
-        <p>
-            This is your dashboard.
-        </p>
+    <h1>
+        Your Chess Dashboard ♟
+    </h1>
 
+    <p>
+        Manage your chess stories, game analysis and latest updates.
+    </p>
 
-        <p>
-            <a href="../blog/create.php">
-                + Create New Blog
-            </a>
-        </p>
+    <div class="dashboard-actions">
 
+        <a
+            href="../blog/create.php"
+            class="button"
+        >
+            ✍ Create New Blog
+        </a>
+
+        <a
+            href="../index.php"
+            class="button secondary-button"
+        >
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+        
+
+       
 
         <h2>My Blog Posts</h2>
 
@@ -87,10 +107,11 @@ require_once "../includes/header.php";
             </p>
 
         <?php else: ?>
-
+<div class="dashboard-grid">
 
             <?php foreach ($blogs as $blog): ?>
 
+                <div class="dashboard-card">
                <article class="blog-card">
 
                     <h3>
@@ -168,10 +189,10 @@ require_once "../includes/header.php";
 
                 </article>
 
-                <hr>
+                 </div>
 
             <?php endforeach; ?>
-
+ </div>
 
         <?php endif; ?>
 

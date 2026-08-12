@@ -58,7 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 <section class="page-section">
 
-    <h1>Create New Blog</h1>
+    <div class="page-section">
+
+    <h1>Create a Chess Blog ♟</h1>
+
+    <p>
+        Share your chess knowledge, game analysis,
+        tournament news or strategies with the community.
+    </p>
+
+    <!-- YOUR EXISTING FORM HERE -->
+
+</div>
 
     <?php if (!empty($message)): ?>
 
@@ -94,13 +105,67 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Blog Content
             </label>
 
-            <textarea
-                id="content"
-                name="content"
-                rows="12"
-                placeholder="Write your blog here..."
-                required
-            ></textarea>
+            <div class="editor">
+
+    <div class="editor-toolbar">
+
+        <button
+            type="button"
+            onclick="formatText('bold')"
+            title="Bold"
+        >
+            <strong>B</strong>
+        </button>
+
+        <button
+            type="button"
+            onclick="formatText('italic')"
+            title="Italic"
+        >
+            <em>I</em>
+        </button>
+
+        <button
+            type="button"
+            onclick="formatText('underline')"
+            title="Underline"
+        >
+            <u>U</u>
+        </button>
+
+        <button
+            type="button"
+            onclick="formatText('insertUnorderedList')"
+            title="Bullet list"
+        >
+            • List
+        </button>
+
+        <button
+            type="button"
+            onclick="formatText('insertOrderedList')"
+            title="Numbered list"
+        >
+            1. List
+        </button>
+
+    </div>
+
+
+    <div
+        id="blogEditor"
+        class="editor-area"
+        contenteditable="true"
+    ></div>
+
+
+    <input
+        type="hidden"
+        name="content"
+        id="blogContent"
+    >
+
+</div>
 
         </div>
 
