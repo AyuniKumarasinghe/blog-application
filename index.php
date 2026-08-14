@@ -2,11 +2,11 @@
 
 require_once "config/database.php";
 
-
 $sql = "SELECT blogPost.id,
                blogPost.title,
                blogPost.content,
                blogPost.created_at,
+               blogPost.image,
                user.username
         FROM blogPost
         INNER JOIN user
@@ -23,7 +23,6 @@ require_once "includes/header.php";
 ?>
 
 
-
 <section class="hero">
 
     <?php if (isset($_SESSION["user_id"])): ?>
@@ -34,7 +33,7 @@ require_once "includes/header.php";
         </h1>
 
         <p>
-            Welcome to ChessUpdates — explore chess techniques,
+            Welcome to ChessUpdate — explore chess techniques,
             tournament news, famous games and the latest stories
             from the world of chess.
         </p>
@@ -42,7 +41,7 @@ require_once "includes/header.php";
     <?php else: ?>
 
         <h1>
-            Welcome to ChessUpdates ♟
+            Welcome to ChessUpdate ♟
         </h1>
 
         <p>
@@ -54,12 +53,14 @@ require_once "includes/header.php";
             href="auth/register.php"
             class="button"
         >
-            Join ChessUpdates
+            Join ChessUpdate
         </a>
 
     <?php endif; ?>
 
 </section>
+
+
 <section>
 
     <div class="section-heading">
@@ -128,91 +129,95 @@ require_once "includes/header.php";
 
 </section>
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+<main>
 
-   
-</head>
-
-<body>
-
-    <header>
-
-       
-
-    </header>
-   
+    <h2>Latest Blog Posts</h2>
 
 
+    <?php if (empty($blogs)): ?>
+
+        <p>
+            No blog posts available yet.
+        </p>
+
+    <?php else: ?>
+
+        <div class="blog-grid">
+
+            <?php foreach ($blogs as $blog): ?>
+
+                <article class="blog-card">
 
 
+                    <?php if (!empty($blog["image"])): ?>
 
-    <main>
+                        <div class="blog-card-image">
 
-        <h2>Latest Blog Posts</h2>
+                            <img
+                                src="assets/uploads/blogs/<?php echo htmlspecialchars($blog["image"]); ?>"
+                                alt="<?php echo htmlspecialchars($blog["title"]); ?>"
+                            >
+
+                        </div>
+
+                    <?php endif; ?>
 
 
-        <?php if (empty($blogs)): ?>
+                    <div class="blog-card-content">
 
-            <p>
-                No blog posts available yet.
-            </p>
+                        <h3>
+                            <?php echo htmlspecialchars($blog["title"]); ?>
+                        </h3>
 
-            <div class="blog-grid">
 
-        <?php else: ?>
+                        <p>
+                            By
+                            <?php echo htmlspecialchars($blog["username"]); ?>
+                        </p>
 
-    <div class="blog-grid">
 
-        <?php foreach ($blogs as $blog): ?>
+                        <p>
+                            <?php
+                            echo date(
+                                "F d, Y",
+                                strtotime($blog["created_at"])
+                            );
+                            ?>
+                        </p>
 
-            <article class="blog-card">
 
-                <h3>
-                    <?php echo htmlspecialchars($blog["title"]); ?>
-                </h3>
+                        <p>
+                            <?php
 
-                <p>
-                    By
-                    <?php echo htmlspecialchars($blog["username"]); ?>
-                </p>
+                            $shortContent = strlen($blog["content"]) > 150
+                                ? substr($blog["content"], 0, 150) . "..."
+                                : $blog["content"];
 
-                <p>
-                    <?php
-                    echo date(
-                        "F d, Y",
-                        strtotime($blog["created_at"])
-                    );
-                    ?>
-                </p>
+                            echo htmlspecialchars($shortContent);
 
-                <p>
-                    <?php
-                    $shortContent = strlen($blog["content"]) > 150
-                        ? substr($blog["content"], 0, 150) . "..."
-                        : $blog["content"];
+                            ?>
+                        </p>
 
-                    echo htmlspecialchars($shortContent);
-                    ?>
-                </p>
 
-                <a
-                    href="blog/view.php?id=<?php echo $blog["id"]; ?>"
-                    class="button"
-                >
-                    Read More
-                </a>
+                        <a
+                            href="blog/view.php?id=<?php echo $blog["id"]; ?>"
+                            class="button"
+                        >
+                            Read More
+                        </a>
 
-            </article>
+                    </div>
 
-        <?php endforeach; ?>
+                </article>
 
-    </div>
+            <?php endforeach; ?>
 
-        <?php endif; ?>
+        </div>
 
-    </main>
+    <?php endif; ?>
+
+</main>
+
 
 <?php require_once "includes/footer.php"; ?>
