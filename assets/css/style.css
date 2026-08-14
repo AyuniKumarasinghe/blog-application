@@ -405,7 +405,7 @@ button:hover,
         var(--dark-green);
 
     font-size: 23px;
-
+  font-family: Georgia, serif;
     font-weight: 800;
 
     transition:
