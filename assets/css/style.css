@@ -1725,6 +1725,94 @@ input[type="file"] {
         var(--blue);
 }
 
+/* =========================================
+   FORGOT PASSWORD
+   ========================================= */
+
+.forgot-password {
+
+    text-align: right;
+
+    margin-top: -5px;
+
+    margin-bottom: 15px;
+
+    font-size: 13px;
+}
+
+
+.forgot-password a {
+
+    color: var(--forest-green);
+
+    font-weight: 700;
+
+    text-decoration: underline;
+
+    transition: color 0.2s ease;
+}
+
+
+.forgot-password a:hover {
+
+    color: var(--blue);
+}
+
+
+.reset-testing-box {
+
+    margin-top: 20px;
+
+    padding: 16px;
+
+    background: var(--light-green);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    text-align: center;
+
+    overflow-wrap: anywhere;
+}
+
+
+.reset-testing-box strong {
+
+    display: block;
+
+    color: var(--dark-green);
+
+    margin-bottom: 8px;
+}
+
+
+.reset-testing-box p {
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+    margin-bottom: 12px;
+}
+
+
+.reset-testing-box a {
+
+    color: var(--blue);
+
+    font-weight: 700;
+
+    text-decoration: underline;
+
+}
+
+
+.reset-testing-box a:hover {
+
+    opacity: 0.8;
+}
+
 
 /* =========================================
    MESSAGES

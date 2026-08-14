@@ -26,10 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (
-            $user &&
-            password_verify($password, $user["password"])
-        ) {
+        if ($user && password_verify($password, $user["password"])) {
 
             session_regenerate_id(true);
 
@@ -64,9 +61,7 @@ require_once "../includes/header.php";
                 ♟
             </div>
 
-            <h1>
-                ChessUpdate
-            </h1>
+            <h1>ChessUpdate</h1>
 
             <p>
                 Stay Ahead. Stay Updated. Play Better.
@@ -77,9 +72,7 @@ require_once "../includes/header.php";
 
         <div class="auth-heading">
 
-            <h2>
-                Welcome Back
-            </h2>
+            <h2>Welcome Back</h2>
 
             <p>
                 Login to continue to your chess world.
@@ -91,7 +84,9 @@ require_once "../includes/header.php";
         <?php if (!empty($message)): ?>
 
             <div class="message error-message">
+
                 <?php echo htmlspecialchars($message); ?>
+
             </div>
 
         <?php endif; ?>
@@ -129,6 +124,17 @@ require_once "../includes/header.php";
                     autocomplete="current-password"
                     required
                 >
+
+            </div>
+
+
+            <!-- FORGOT PASSWORD -->
+
+            <div class="forgot-password">
+
+                <a href="forgot_password.php">
+                    Forgot Password?
+                </a>
 
             </div>
 
