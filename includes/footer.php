@@ -4,9 +4,19 @@
 
     <div class="container">
 
+        <div class="footer-brand">
+            ♟ ChessUpdate
+        </div>
+
         <p>
-            &copy; <?php echo date("Y"); ?> My Blog.
-            All rights reserved.
+            Stay Ahead. Stay Updated. Play Better.
+        </p>
+
+        <p class="footer-credit">
+            © <?php echo date("Y"); ?>
+            ChessUpdate.
+            Created by
+            <strong>Ayuni Kumarasinghe</strong>.
         </p>
 
     </div>

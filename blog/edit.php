@@ -3,29 +3,20 @@
 session_start();
 
 require_once "../config/database.php";
-$pageTitle = "Edit Blog - My Blog";
 
-require_once "../includes/header.php";
-
-// User must be logged in
 if (!isset($_SESSION["user_id"])) {
-
     header("Location: ../auth/login.php");
     exit;
 }
 
-// Check blog ID
 if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
-
     header("Location: ../index.php");
     exit;
 }
 
 $blogId = (int) $_GET["id"];
 
-
-// Get the blog
-$sql = "SELECT id, user_id, title, content
+$sql = "SELECT id, user_id, title, content, image
         FROM blogPost
         WHERE id = ?";
 
@@ -34,37 +25,35 @@ $stmt->execute([$blogId]);
 
 $blog = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
-// Blog does not exist
 if (!$blog) {
-
     header("Location: ../index.php");
     exit;
 }
 
-
-// Authorization check
 if ($blog["user_id"] != $_SESSION["user_id"]) {
-
     die("Access denied. You can only edit your own blogs.");
 }
 
-
 $message = "";
 
-
-// Update blog
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $title = trim($_POST["title"]);
-    $content = trim($_POST["content"]);
-
+    $title = trim($_POST["title"] ?? "");
+    $content = trim($_POST["content"] ?? "");
 
     if (empty($title) || empty($content)) {
 
         $message = "Title and content are required.";
 
     } else {
+
+        /*
+         * Only allow formatting created by our editor.
+         */
+        $content = strip_tags(
+            $content,
+            "<p><br><strong><b><em><i><u><ul><ol><li>"
+        );
 
         $sql = "UPDATE blogPost
                 SET title = ?, content = ?
@@ -79,96 +68,148 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["user_id"]
         ]);
 
-
         header("Location: view.php?id=" . $blogId);
         exit;
     }
 }
 
+$pageTitle = "Edit Blog - ChessUpdate";
+
+require_once "../includes/header.php";
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<section class="page-section">
 
-<head>
+    <div class="form-card">
 
-</head>
+        <div class="form-card-header">
 
-<body>
+            <span class="form-icon">♟</span>
 
-   <section class="page-section">
+            <h1>Edit Your Chess Blog</h1>
 
-    <h1>Edit Blog</h1>
-
-
-    <?php if (!empty($message)): ?>
-
-        <p class="message">
-            <?php echo htmlspecialchars($message); ?>
-        </p>
-
-    <?php endif; ?>
-
-
-    <form method="POST" action="">
-
-        <div>
-
-            <label for="title">
-                Blog Title
-            </label>
-
-            <input
-                type="text"
-                id="title"
-                name="title"
-                value="<?php echo htmlspecialchars($blog["title"]); ?>"
-                required
-            >
+            <p>
+                Update your chess story, analysis or news.
+            </p>
 
         </div>
 
 
-        <div>
+        <?php if (!empty($message)): ?>
 
-            <label for="content">
-                Blog Content
-            </label>
+            <div class="message error-message">
+                <?php echo htmlspecialchars($message); ?>
+            </div>
 
-            <textarea
-                id="content"
-                name="content"
-                rows="12"
-                required
-            ><?php echo htmlspecialchars($blog["content"]); ?></textarea>
-
-        </div>
+        <?php endif; ?>
 
 
-        <button type="submit">
-            Update Blog
-        </button>
+        <form method="POST" action="">
 
-    </form>
+            <div class="form-group">
+
+                <label for="title">
+                    Blog Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="<?php echo htmlspecialchars($blog["title"]); ?>"
+                    maxlength="200"
+                    required
+                >
+
+            </div>
 
 
-    <p style="margin-top: 20px;">
+            <div class="form-group">
 
-        <a
-            href="view.php?id=<?php echo $blogId; ?>"
-            class="button"
-        >
-            Cancel
-        </a>
+                <label>
+                    Blog Content
+                </label>
 
-    </p>
+                <div class="editor">
+
+                    <div class="editor-toolbar">
+
+                        <button
+                            type="button"
+                            onclick="formatText('bold')"
+                        >
+                            <strong>B</strong>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('italic')"
+                        >
+                            <em>I</em>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('underline')"
+                        >
+                            <u>U</u>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('insertUnorderedList')"
+                        >
+                            • List
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('insertOrderedList')"
+                        >
+                            1. List
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="blogEditor"
+                        class="editor-area"
+                        contenteditable="true"
+                    ><?php echo $blog["content"]; ?></div>
+
+
+                    <input
+                        type="hidden"
+                        name="content"
+                        id="blogContent"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button type="submit">
+                    Update Blog
+                </button>
+
+                <a
+                    href="view.php?id=<?php echo $blogId; ?>"
+                    class="button secondary-button"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </section>
 
-
-   
-
-</body>
-
-</html>
 <?php require_once "../includes/footer.php"; ?>

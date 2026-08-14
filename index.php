@@ -1,7 +1,7 @@
 <?php
 
 require_once "config/database.php";
-$selectedDate = $_GET['date'] ?? '';
+
 
 $sql = "SELECT blogPost.id,
                blogPost.title,
@@ -17,7 +17,7 @@ $stmt = $pdo->query($sql);
 
 $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$pageTitle = "ChessUpdates - Home";
+$pageTitle = "ChessUpdate - Home";
 
 require_once "includes/header.php";
 ?>

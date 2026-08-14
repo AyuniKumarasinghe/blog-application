@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const deleteLinks = document.querySelectorAll(".delete-link");
+    /*
+     * Delete confirmation
+     */
+
+    const deleteLinks =
+        document.querySelectorAll(".delete-link");
 
     deleteLinks.forEach(function (link) {
 
@@ -18,39 +23,67 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+
+    /*
+     * Blog editor
+     */
+
+    const editor =
+        document.getElementById("blogEditor");
+
+    const content =
+        document.getElementById("blogContent");
+
+    const form =
+        editor ? editor.closest("form") : null;
+
+
+    if (editor && content && form) {
+
+        form.addEventListener(
+            "submit",
+            function () {
+
+                content.value =
+                    editor.innerHTML;
+
+            }
+        );
+
+
+        /*
+         * Load existing content for Edit page
+         */
+
+        if (editor.innerHTML.trim() !== "") {
+
+            content.value =
+                editor.innerHTML;
+
+        }
+    }
+
 });
 
 
-/* =================================
-   CHESSUPDATE BLOG EDITOR
-   ================================= */
+/*
+ * Rich text formatting
+ */
 
 function formatText(command) {
 
-    document.execCommand(command, false, null);
+    const editor =
+        document.getElementById("blogEditor");
 
-    document.getElementById("blogEditor").focus();
-}
+    if (!editor) {
+        return;
+    }
 
+    editor.focus();
 
-const blogForm = document.querySelector("form");
-
-if (blogForm) {
-
-    blogForm.addEventListener("submit", function () {
-
-        const editor =
-            document.getElementById("blogEditor");
-
-        const content =
-            document.getElementById("blogContent");
-
-        if (editor && content) {
-
-            content.value = editor.innerHTML;
-
-        }
-
-    });
-
+    document.execCommand(
+        command,
+        false,
+        null
+    );
 }

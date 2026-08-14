@@ -3,7 +3,6 @@
 require_once "../config/database.php";
 
 if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
-
     header("Location: ../index.php");
     exit;
 }
@@ -13,6 +12,7 @@ $blogId = (int) $_GET["id"];
 $sql = "SELECT blogPost.id,
                blogPost.title,
                blogPost.content,
+               blogPost.image,
                blogPost.created_at,
                blogPost.updated_at,
                user.username
@@ -22,118 +22,98 @@ $sql = "SELECT blogPost.id,
         WHERE blogPost.id = ?";
 
 $stmt = $pdo->prepare($sql);
-
 $stmt->execute([$blogId]);
 
 $blog = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$pageTitle = $blog["title"] . " - My Blog";
-
-require_once "../includes/header.php";
-
 if (!$blog) {
-
     header("Location: ../index.php");
     exit;
 }
 
+$pageTitle = $blog["title"] . " - ChessUpdate";
+
+require_once "../includes/header.php";
+
+/*
+ * Allow only the formatting tags that our editor creates.
+ * This prevents unwanted HTML/JavaScript from being displayed.
+ */
+$safeContent = strip_tags(
+    $blog["content"],
+    "<p><br><strong><b><em><i><u><ul><ol><li>"
+);
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<section class="single-blog">
 
-<head>
+    <div class="single-blog-header">
 
-</head>
-
-<body>
-
-    <header>
-
-     
-
-    </header>
-
-
-    <main>
-
-       <article class="single-blog">
-
-    <h1>
-        <?php echo htmlspecialchars($blog["title"]); ?>
-    </h1>
-
-
-    <div class="blog-meta">
-
-        <span>
-            By
-            <strong>
-                <?php echo htmlspecialchars($blog["username"]); ?>
-            </strong>
+        <span class="blog-label">
+            ♟ ChessUpdate
         </span>
 
-        <span>
-            Published:
-            <?php
-            echo date(
-                "F d, Y",
-                strtotime($blog["created_at"])
-            );
-            ?>
-        </span>
+        <h1>
+            <?php echo htmlspecialchars($blog["title"]); ?>
+        </h1>
+
+        <div class="blog-meta">
+
+            <span>
+                By
+                <strong>
+                    <?php echo htmlspecialchars($blog["username"]); ?>
+                </strong>
+            </span>
+
+            <span>
+                📅
+                <?php
+                echo date(
+                    "F d, Y",
+                    strtotime($blog["created_at"])
+                );
+                ?>
+            </span>
+
+        </div>
 
     </div>
 
 
-    <?php if ($blog["updated_at"] !== $blog["created_at"]): ?>
+    <?php if (!empty($blog["image"])): ?>
 
-        <p class="blog-meta">
+        <div class="single-blog-image">
 
-            Updated:
-            <?php
-            echo date(
-                "F d, Y",
-                strtotime($blog["updated_at"])
-            );
-            ?>
+            <img
+                src="../assets/uploads/blogs/<?php echo htmlspecialchars($blog["image"]); ?>"
+                alt="<?php echo htmlspecialchars($blog["title"]); ?>"
+            >
 
-        </p>
+        </div>
 
     <?php endif; ?>
 
 
-    <hr>
-
-
     <div class="single-blog-content">
 
-        <?php
-        echo nl2br(
-            htmlspecialchars($blog["content"])
-        );
-        ?>
+        <?php echo $safeContent; ?>
 
     </div>
 
 
-    <p style="margin-top: 30px;">
+    <div class="single-blog-actions">
 
         <a
             href="../index.php"
-            class="button"
+            class="button secondary-button"
         >
             ← Back to Home
         </a>
 
-    </p>
+    </div>
 
-</article>
+</section>
 
-
-    </main>
-
-</body>
-
-</html>
 <?php require_once "../includes/footer.php"; ?>

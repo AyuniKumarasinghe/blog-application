@@ -4,187 +4,353 @@ session_start();
 
 require_once "../config/database.php";
 
-
-$pageTitle = "Create Blog - My Blog";
-
-require_once "../includes/header.php";
-
-// Make sure the user is logged in
 if (!isset($_SESSION["user_id"])) {
-
     header("Location: ../auth/login.php");
     exit;
 }
 
 $message = "";
+$messageType = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $title = trim($_POST["title"]);
-    $content = trim($_POST["content"]);
+    $title = trim($_POST["title"] ?? "");
+    $content = trim($_POST["content"] ?? "");
+    $imageName = null;
 
-    // Check empty fields
+
     if (empty($title) || empty($content)) {
 
-        $message = "Title and content are required.";
+        $message =
+            "Title and content are required.";
+
+        $messageType = "error";
 
     } else {
 
-        $sql = "INSERT INTO blogPost (user_id, title, content)
-                VALUES (?, ?, ?)";
+        /*
+         * Allow only the formatting created by our editor.
+         */
+        $content = strip_tags(
+            $content,
+            "<p><br><strong><b><em><i><u><ul><ol><li>"
+        );
 
-        $stmt = $pdo->prepare($sql);
 
-        $stmt->execute([
-            $_SESSION["user_id"],
-            $title,
-            $content
-        ]);
+        /*
+         * OPTIONAL IMAGE UPLOAD
+         */
+        if (
+            isset($_FILES["image"]) &&
+            $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE
+        ) {
 
-        header("Location: ../dashboard/index.php");
-        exit;
+            if (
+                $_FILES["image"]["error"]
+                !== UPLOAD_ERR_OK
+            ) {
+
+                $message =
+                    "There was a problem uploading the image.";
+
+                $messageType = "error";
+
+            } else {
+
+                $allowedTypes = [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp"
+                ];
+
+                $fileType =
+                    mime_content_type(
+                        $_FILES["image"]["tmp_name"]
+                    );
+
+                $fileSize =
+                    $_FILES["image"]["size"];
+
+
+                if (
+                    !in_array(
+                        $fileType,
+                        $allowedTypes,
+                        true
+                    )
+                ) {
+
+                    $message =
+                        "Only JPG, PNG and WebP images are allowed.";
+
+                    $messageType = "error";
+
+                } elseif ($fileSize > 5 * 1024 * 1024) {
+
+                    $message =
+                        "Image must be smaller than 5MB.";
+
+                    $messageType = "error";
+
+                } else {
+
+                    $uploadDirectory =
+                        "../assets/uploads/blogs/";
+
+                    if (
+                        !is_dir(
+                            $uploadDirectory
+                        )
+                    ) {
+
+                        mkdir(
+                            $uploadDirectory,
+                            0755,
+                            true
+                        );
+                    }
+
+
+                    $extension = strtolower(
+                        pathinfo(
+                            $_FILES["image"]["name"],
+                            PATHINFO_EXTENSION
+                        )
+                    );
+
+
+                    $imageName =
+                        bin2hex(
+                            random_bytes(16)
+                        )
+                        . "."
+                        . $extension;
+
+
+                    $destination =
+                        $uploadDirectory
+                        . $imageName;
+
+
+                    if (
+                        !move_uploaded_file(
+                            $_FILES["image"]["tmp_name"],
+                            $destination
+                        )
+                    ) {
+
+                        $message =
+                            "Unable to save the image.";
+
+                        $messageType = "error";
+
+                        $imageName = null;
+                    }
+                }
+            }
+        }
+
+
+        if (empty($message)) {
+
+            $sql = "INSERT INTO blogPost
+                    (user_id, title, content, image)
+                    VALUES (?, ?, ?, ?)";
+
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->execute([
+                $_SESSION["user_id"],
+                $title,
+                $content,
+                $imageName
+            ]);
+
+            header("Location: ../dashboard/index.php");
+            exit;
+        }
     }
 }
 
+$pageTitle = "Create Blog - ChessUpdate";
+
+require_once "../includes/header.php";
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-</head>
-
-<body>
 <section class="page-section">
 
-    <div class="page-section">
+    <div class="form-card">
 
-    <h1>Create a Chess Blog ♟</h1>
+        <div class="form-card-header">
 
-    <p>
-        Share your chess knowledge, game analysis,
-        tournament news or strategies with the community.
-    </p>
+            <span class="form-icon">
+                ♟
+            </span>
 
-    <!-- YOUR EXISTING FORM HERE -->
+            <h1>
+                Create a Chess Blog
+            </h1>
 
-</div>
-
-    <?php if (!empty($message)): ?>
-
-        <p class="message">
-            <?php echo htmlspecialchars($message); ?>
-        </p>
-
-    <?php endif; ?>
-
-
-    <form method="POST" action="">
-
-        <div>
-
-            <label for="title">
-                Blog Title
-            </label>
-
-            <input
-                type="text"
-                id="title"
-                name="title"
-                placeholder="Enter your blog title"
-                required
-            >
+            <p>
+                Share your chess knowledge, game analysis,
+                tournament news or strategies.
+            </p>
 
         </div>
 
 
-        <div>
+        <?php if (!empty($message)): ?>
 
-            <label for="content">
-                Blog Content
-            </label>
+            <div
+                class="message
+                <?php
+                echo $messageType === "success"
+                    ? "success-message"
+                    : "error-message";
+                ?>"
+            >
 
-            <div class="editor">
+                <?php echo htmlspecialchars($message); ?>
 
-    <div class="editor-toolbar">
+            </div>
 
-        <button
-            type="button"
-            onclick="formatText('bold')"
-            title="Bold"
+        <?php endif; ?>
+
+
+        <form
+            method="POST"
+            action=""
+            enctype="multipart/form-data"
         >
-            <strong>B</strong>
-        </button>
 
-        <button
-            type="button"
-            onclick="formatText('italic')"
-            title="Italic"
-        >
-            <em>I</em>
-        </button>
+            <div class="form-group">
 
-        <button
-            type="button"
-            onclick="formatText('underline')"
-            title="Underline"
-        >
-            <u>U</u>
-        </button>
+                <label for="title">
+                    Blog Title
+                </label>
 
-        <button
-            type="button"
-            onclick="formatText('insertUnorderedList')"
-            title="Bullet list"
-        >
-            • List
-        </button>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    maxlength="200"
+                    placeholder="Enter your blog title"
+                    required
+                >
 
-        <button
-            type="button"
-            onclick="formatText('insertOrderedList')"
-            title="Numbered list"
-        >
-            1. List
-        </button>
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Blog Content
+                </label>
+
+
+                <div class="editor">
+
+                    <div class="editor-toolbar">
+
+                        <button
+                            type="button"
+                            onclick="formatText('bold')"
+                        >
+                            <strong>B</strong>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('italic')"
+                        >
+                            <em>I</em>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('underline')"
+                        >
+                            <u>U</u>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('insertUnorderedList')"
+                        >
+                            • List
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="formatText('insertOrderedList')"
+                        >
+                            1. List
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="blogEditor"
+                        class="editor-area"
+                        contenteditable="true"
+                    ></div>
+
+
+                    <input
+                        type="hidden"
+                        name="content"
+                        id="blogContent"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="image">
+                    Blog Image
+                    <span class="optional">
+                        (Optional)
+                    </span>
+                </label>
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                >
+
+                <small class="input-help">
+                    JPG, PNG or WebP. Maximum 5MB.
+                </small>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button type="submit">
+                    Publish Blog
+                </button>
+
+                <a
+                    href="../dashboard/index.php"
+                    class="button secondary-button"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
 
     </div>
 
-
-    <div
-        id="blogEditor"
-        class="editor-area"
-        contenteditable="true"
-    ></div>
-
-
-    <input
-        type="hidden"
-        name="content"
-        id="blogContent"
-    >
-
-</div>
-
-        </div>
-
-
-        <button type="submit">
-            Publish Blog
-        </button>
-
-    </form>
-
 </section>
 
-    <p>
-        <a href="../dashboard/index.php">
-            Back to Dashboard
-        </a>
-    </p>
-
-</body>
-
-</html>
 <?php require_once "../includes/footer.php"; ?>
