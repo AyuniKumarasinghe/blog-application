@@ -17,6 +17,27 @@ $stmt = $pdo->query($sql);
 
 $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+/**
+ * Helper function to generate clean text preview/excerpt from HTML content
+ */
+function getCleanExcerpt($content, $limit = 150) {
+    // 1. Decode HTML entities (e.g. &lt;p&gt; -> <p>)
+    $decoded = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
+    
+    // 2. Strip all HTML tags to get pure plain text
+    $plainText = strip_tags($decoded);
+    
+    // 3. Remove extra spaces, tabs, or newlines
+    $plainText = trim(preg_replace('/\s+/', ' ', $plainText));
+    
+    // 4. Truncate text cleanly using multibyte string functions
+    if (mb_strlen($plainText) > $limit) {
+        $plainText = mb_substr($plainText, 0, $limit) . '...';
+    }
+    
+    return htmlspecialchars($plainText, ENT_QUOTES, 'UTF-8');
+}
+
 $pageTitle = "ChessUpdate - Home";
 
 require_once "includes/header.php";
@@ -187,16 +208,9 @@ require_once "includes/header.php";
                         </p>
 
 
+                        <!-- Cleaned & Safe Excerpt -->
                         <p>
-                            <?php
-
-                            $shortContent = strlen($blog["content"]) > 150
-                                ? substr($blog["content"], 0, 150) . "..."
-                                : $blog["content"];
-
-                            echo htmlspecialchars($shortContent);
-
-                            ?>
+                            <?php echo getCleanExcerpt($blog["content"]); ?>
                         </p>
 
 
